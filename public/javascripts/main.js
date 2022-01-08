@@ -6,10 +6,16 @@ import {createOrbitControls} from "/javascripts/orbitControls.js";
 
 let scene, camera, renderer;
 
-await init();
-animate();
+const startButton = document.getElementById("start");
+startButton.addEventListener('click', init);
 
 async function init() {
+    
+    // Suppression de l'écran d'accueil
+    const overlay = document.getElementById("overlay");
+    overlay.remove();
+
+    /** WEBGL **/
     scene = await createScene();
     camera = createCamera();
     renderer = createRenderer();
@@ -19,6 +25,7 @@ async function init() {
     document.body.appendChild(renderer.domElement);
 
     window.addEventListener('resize', onWindowResize);
+    animate();
 }
 
 function onWindowResize() {
