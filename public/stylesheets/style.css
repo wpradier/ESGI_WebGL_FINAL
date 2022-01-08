@@ -1,12 +1,23 @@
+@font-face {
+    font-family: "Battlesbridge";
+    src: url("/fonts/Battlesbridge.woff2");
+}
+
 body {
+    overflow: hidden;
     margin: 0;
     background-color: black;
 }
 
 h1 {
+    font-family: Battlesbridge;
     color: white;
     font-size: 4rem;
     margin-bottom: 3rem;
+}
+
+span {
+    margin-right: 30px;
 }
 
 #overlay {
@@ -21,6 +32,9 @@ h1 {
 }
 
 #start {
+    color: mediumpurple;
+    background-color: transparent;
+    border: 1px solid mediumpurple;
     font-size: 1rem;
     border-radius: 4px;
     padding: 15px;
