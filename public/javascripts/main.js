@@ -3,6 +3,7 @@ import {createScene} from "/javascripts/scene.js";
 import {createCamera} from "/javascripts/camera.js";
 import {createRenderer} from "/javascripts/renderer.js";
 import {createFirstPersonControls} from "/javascripts/firstPersonControls.js";
+import {createSpotLight} from "/javascripts/spotLight.js";
 
 let scene, camera, renderer, controls, clock;
 
@@ -29,6 +30,8 @@ async function init() {
 
 
     scene.add(mesh);
+
+    createSpotLight(scene);
 
 
 
