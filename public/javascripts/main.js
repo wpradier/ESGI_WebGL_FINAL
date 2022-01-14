@@ -3,14 +3,18 @@ import {createScene} from "/javascripts/scene.js";
 import {createCamera} from "/javascripts/camera.js";
 import {createRenderer} from "/javascripts/renderer.js";
 import {createFirstPersonControls} from "/javascripts/firstPersonControls.js";
+import {createMainPerson} from "/javascripts/mainPerson.js";
+import { positionMainPerson } from "/javascripts/mainPerson.js";
 
-let scene, camera, renderer, controls, clock;
+let scene, camera, renderer, controls, mixer, mainPersonObj;
+
+const clock = new THREE.Clock();
 
 const startButton = document.getElementById("start");
 startButton.addEventListener('click', init);
 
 async function init() {
-    clock = new THREE.Clock();
+    //clock = new THREE.Clock();
 
     // Suppression de l'écran d'accueil
     const overlay = document.getElementById("overlay");
@@ -28,9 +32,10 @@ async function init() {
     controls = createFirstPersonControls(camera, renderer);
 
 
-    scene.add(mesh);
+    //scene.add(mesh);
 
-
+    //Add mainPerson
+    mainPersonObj = await createMainPerson(scene, mixer, camera);
 
     document.body.appendChild(renderer.domElement);
 
@@ -51,6 +56,18 @@ function onWindowResize() {
 function animate() {
     requestAnimationFrame(animate);
 
-    controls.update(clock.getDelta());
+    const delta = clock.getDelta();
+    controls.update( delta );
+    if ( mainPersonObj.mixer ){
+        positionMainPerson(mainPersonObj.obj, camera);
+        /*
+        mainPersonObj.obj.position.y = controls.mouseX;
+        mainPersonObj.obj.position.x = controls.mouseY;
+         */
+
+        console.log(controls);
+        mainPersonObj.mixer.update( delta );
+    }
+
     renderer.render(scene, camera);
 }
