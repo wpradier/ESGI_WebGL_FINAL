@@ -12,7 +12,7 @@ async function createMainPerson(scene, mixer, camera){
     const action = mixer.clipAction( obj.animations[ 0 ] ); // obj.animation ne fonctionne pas
     action.play();
 
-    positionMainPerson(obj, camera);
+    positionMainPerson(obj, camera;
 
     obj.traverse( function ( child ) {
         if ( child.isMesh ) {
@@ -21,18 +21,16 @@ async function createMainPerson(scene, mixer, camera){
         }
     } );
 
-    scene.add( obj );
+    camera.add( obj );
+    scene.add(camera);
 
     return {"obj": obj, "mixer": mixer};
 }
 
 function positionMainPerson(obj, camera){
     obj.position.y = camera.position.y - 100;
-    obj.position.x = camera.position.x;
-    obj.position.z = camera.position.z;
+    obj.position.x = camera.position.x - 10;
     obj.rotation.y = camera.rotation.y - 550;
-    obj.rotation.x = camera.rotation.x;
-    obj.rotation.z = camera.rotation.z;
 }
 
 export { createMainPerson };

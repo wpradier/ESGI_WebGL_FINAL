@@ -13,6 +13,7 @@ const clock = new THREE.Clock();
 const startButton = document.getElementById("start");
 startButton.addEventListener('click', init);
 
+init();
 async function init() {
     //clock = new THREE.Clock();
 
@@ -32,9 +33,11 @@ async function init() {
     controls = createFirstPersonControls(camera, renderer);
 
 
-    //scene.add(mesh);
+    scene.add(mesh);
 
     //Add mainPerson
+    let ambient = new THREE.AmbientLight( 0xffffff, 1 );
+    scene.add( ambient );
     mainPersonObj = await createMainPerson(scene, mixer, camera);
 
     document.body.appendChild(renderer.domElement);
@@ -59,13 +62,6 @@ function animate() {
     const delta = clock.getDelta();
     controls.update( delta );
     if ( mainPersonObj.mixer ){
-        positionMainPerson(mainPersonObj.obj, camera);
-        /*
-        mainPersonObj.obj.position.y = controls.mouseX;
-        mainPersonObj.obj.position.x = controls.mouseY;
-         */
-
-        console.log(controls);
         mainPersonObj.mixer.update( delta );
     }
 
