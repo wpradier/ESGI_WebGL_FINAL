@@ -3,11 +3,10 @@ import {createScene} from "/javascripts/scene.js";
 import {createCamera} from "/javascripts/camera.js";
 import {createRenderer} from "/javascripts/renderer.js";
 import {createFirstPersonControls} from "/javascripts/firstPersonControls.js";
-import {createMainPerson} from "/javascripts/mainPerson.js";
-import {createMainPersonStatic} from "/javascripts/mainPerson.js";
-import {createMainPersonGetUp} from "/javascripts/mainPerson.js";
+import {createMainPersonSwimming} from "/javascripts/mainPersonSwimming.js";
+import {createMainPersonTradingWater} from "/javascripts/mainPersonTradingWater.js";
 
-let scene, camera, renderer, controls, mixer, mainPersonObj, mainPersonObjGetUp, mainPersonObjStatic, positionX, positionY, positionZ, i;
+let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ;
 const clock = new THREE.Clock();
 
 const startButton = document.getElementById("start");
@@ -34,17 +33,16 @@ async function init() {
 
     scene.add(mesh);
 
-    //Add mainPerson
+    //Add ambient light
     let ambient = new THREE.AmbientLight( 0xffffff, 1 );
     scene.add( ambient );
-    mainPersonObj = await createMainPerson(scene, mixer, camera);
-    mainPersonObjStatic = await createMainPersonStatic(scene, mixer, camera);
-    mainPersonObjGetUp = await createMainPersonGetUp(scene, mixer, camera);
-    positionX = camera.position.x;
-    positionY = camera.position.y;
-    positionZ = camera.position.z;
 
-    i = 0;
+    //Add mainPerson
+    mainPersonObjSwimming = await createMainPersonSwimming(scene, mixer, camera);
+    mainPersonObjTrading = await createMainPersonTradingWater(scene, mixer, camera);
+
+    //update last position 
+    updatePosition();
 
     document.body.appendChild(renderer.domElement);
 
@@ -67,39 +65,28 @@ function animate() {
     const delta = clock.getDelta();
     controls.update( delta );
 
-    if ( mainPersonObjStatic.obj &&  mainPersonObjStatic.mixer){
+    if ( mainPersonObjTrading.obj &&  mainPersonObjTrading.mixer){
         if (positionX == camera.position.x && positionY == camera.position.y && positionZ == camera.position.z){
-            camera.remove( mainPersonObj.obj );
-            if (i == 30){
-                mainPersonObjGetUp.action.play();
-                camera.add(mainPersonObjGetUp.obj);
-                camera.remove( mainPersonObj.obj );
-                scene.add(camera);
-                mainPersonObjGetUp.mixer.update(delta);
-                i++;
-            }else{
-                mainPersonObjGetUp.action.stop();
-                camera.remove(mainPersonObjGetUp.obj);
-                camera.add(mainPersonObjStatic.obj);
-                scene.add(camera);
-                mainPersonObjStatic.mixer.update(delta);
-            }
+            camera.remove( mainPersonObjSwimming.obj );
+            camera.add(mainPersonObjTrading.obj);
+            scene.add(camera);
+            mainPersonObjTrading.mixer.update(delta);
         }else{
-            mainPersonObjGetUp.action.stop();
-            camera.remove( mainPersonObjStatic.obj );
-            camera.remove( mainPersonObjGetUp.obj );
-            camera.add(mainPersonObj.obj);
+            camera.remove( mainPersonObjTrading.obj );
+            camera.add(mainPersonObjSwimming.obj);
             scene.add(camera);
 
-            i = 0;
+            mainPersonObjSwimming.mixer.update(delta);
 
-            mainPersonObj.mixer.update(delta);
-
-            positionX = camera.position.x;
-            positionY = camera.position.y;
-            positionZ = camera.position.z;
+            updatePosition();
         }
     }
 
     renderer.render(scene, camera);
+}
+
+function updatePosition(){
+    positionX = camera.position.x;
+    positionY = camera.position.y;
+    positionZ = camera.position.z;
 }
