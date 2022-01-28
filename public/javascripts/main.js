@@ -3,12 +3,17 @@ import {createScene} from "/javascripts/scene.js";
 import {createCamera} from "/javascripts/camera.js";
 import {createRenderer} from "/javascripts/renderer.js";
 import {createFirstPersonControls} from "/javascripts/firstPersonControls.js";
+import {createStatue} from "/javascripts/statue.js";
+import {createPointLight} from "/javascripts/pointLight.js";
+import {createSpotLight} from "/javascripts/spotLight.js";
+import {createAmbientLight} from "/javascripts/ambientLight.js";
 
-let scene, camera, renderer, controls, clock;
+let scene, camera, renderer, controls, clock, mixer, statueObj, spotLight, lightHelper;
 
 const startButton = document.getElementById("start");
 startButton.addEventListener('click', init);
 
+await init();
 async function init() {
     clock = new THREE.Clock();
 
@@ -27,9 +32,19 @@ async function init() {
     renderer = createRenderer();
     controls = createFirstPersonControls(camera, renderer);
 
+    //scene.add(mesh);
 
-    scene.add(mesh);
+    const loader = new THREE.TextureLoader();
+    loader.setPath( 'assets/skybox/' ); // emplacement des textures
 
+    //Add statue
+    statueObj = await createStatue(scene, mixer);
+    //Add pointLight
+    await createPointLight(scene, statueObj);
+    // Add spotLight
+    await createSpotLight(true, scene);
+    //Add ambient light
+    await createAmbientLight(scene);
 
 
     document.body.appendChild(renderer.domElement);
@@ -51,6 +66,11 @@ function onWindowResize() {
 function animate() {
     requestAnimationFrame(animate);
 
-    controls.update(clock.getDelta());
+    const delta = clock.getDelta();
+    controls.update( delta );
+
+    if ( statueObj.mixer)
+        statueObj.mixer.update(delta);
+
     renderer.render(scene, camera);
 }
