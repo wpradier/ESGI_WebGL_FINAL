@@ -8,7 +8,7 @@ import {createPointLight} from "/javascripts/pointLight.js";
 import {createSpotLight} from "/javascripts/spotLight.js";
 import {createAmbientLight} from "/javascripts/ambientLight.js";
 
-let scene, camera, renderer, controls, clock, mixer, statueObj, spotLight, lightHelper;
+let scene, camera, renderer, controls, clock, mixer, statueObj, pointLight, pointLightActive, spotLight, lightHelper;
 
 const startButton = document.getElementById("start");
 startButton.addEventListener('click', init);
@@ -39,18 +39,19 @@ async function init() {
 
     //Add statue
     statueObj = await createStatue(scene, mixer);
-    //Add pointLight
-    await createPointLight(scene, statueObj);
     // Add spotLight
     await createSpotLight(true, scene);
     //Add ambient light
     await createAmbientLight(scene);
+    //Add pointLight
+    pointLight = await createPointLight(statueObj);
+    pointLightActive = false;
 
 
     document.body.appendChild(renderer.domElement);
 
     window.addEventListener('resize', onWindowResize);
-    animate();
+    await animate();
 }
 
 function onWindowResize() {
@@ -63,7 +64,7 @@ function onWindowResize() {
 }
 
 
-function animate() {
+async function animate() {
     requestAnimationFrame(animate);
 
     const delta = clock.getDelta();
@@ -72,5 +73,25 @@ function animate() {
     if ( statueObj.mixer)
         statueObj.mixer.update(delta);
 
+    // add EventListener the function logKey when a keydown
+    await window.addEventListener('keydown', logKey);
+
     renderer.render(scene, camera);
+}
+
+async function logKey(event) {
+    // when keydown 'a', ...
+    if (event.keyCode === 65)
+    {
+        if (pointLightActive == false){
+            scene.add(pointLight.pointLightRight);
+            scene.add(pointLight.pointLightLeft);
+            pointLightActive = true;
+        }else{
+            scene.remove(pointLight.pointLightRight);
+            scene.remove(pointLight.pointLightLeft);
+            pointLightActive = false; 
+        }
+
+    }
 }
