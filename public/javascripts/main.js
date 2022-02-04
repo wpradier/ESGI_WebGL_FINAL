@@ -8,10 +8,13 @@ import {createPointLight} from "/javascripts/pointLight.js";
 import {createSpotLight} from "/javascripts/spotLight.js";
 import {createAmbientLight} from "/javascripts/ambientLight.js";
 
-let scene, camera, renderer, controls, clock, mixer, statueObj, pointLight, pointLightActive, spotLight, lightHelper;
+let scene, camera, renderer, controls, clock, mixer, statueObj, pointLight, pointLightActive, raycaster, parentTransform;
 
 const startButton = document.getElementById("start");
 startButton.addEventListener('click', init);
+
+const pointer = new THREE.Vector2();
+const point = new THREE.Vector3();
 
 await init();
 async function init() {
@@ -27,6 +30,11 @@ async function init() {
     const mesh = new THREE.Mesh(geometry, material);
 
     /** WEBGL **/
+
+    // COLLISION TEST
+    raycaster = new THREE.Raycaster();
+    document.addEventListener( 'mousemove', onPointerMove );
+
     scene = await createScene();
     camera = createCamera();
     renderer = createRenderer();
@@ -44,9 +52,8 @@ async function init() {
     //Add ambient light
     await createAmbientLight(scene);
     //Add pointLight
-    pointLight = await createPointLight(statueObj);
+    pointLight = await createPointLight(statueObj, scene);
     pointLightActive = false;
-
 
     document.body.appendChild(renderer.domElement);
 
@@ -73,6 +80,19 @@ async function animate() {
     if ( statueObj.mixer)
         statueObj.mixer.update(delta);
 
+    raycaster.setFromCamera( pointer, camera );
+    const intersects = raycaster.intersectObjects( statueObj.obj.children, true );
+
+    if (statueObj.obj){
+        if ( intersects.length > 0 ) {
+            pointLight.pointLightRight.visible = true;
+            pointLight.pointLightLeft.visible = true;
+        } else {
+            pointLight.pointLightRight.visible = false;
+            pointLight.pointLightLeft.visible = false;
+        }
+    }
+
     // add EventListener the function logKey when a keydown
     await window.addEventListener('keydown', logKey);
 
@@ -90,8 +110,15 @@ async function logKey(event) {
         }else{
             scene.remove(pointLight.pointLightRight);
             scene.remove(pointLight.pointLightLeft);
-            pointLightActive = false; 
+            pointLightActive = false;
         }
 
     }
+}
+
+function onPointerMove( event ) {
+
+    pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
 }

@@ -4,7 +4,7 @@ function createSpotLight(active, scene){
     let spotLight;
 
     // SpotLight (color, intensity)
-    spotLight = new THREE.SpotLight( 0xff0000, 50 );
+    spotLight = new THREE.SpotLight( 0xffffff, 50 );
     spotLight.position.set( 15, 300, 20 );
     // Maximum size of the spotlight angle whose upper bound is Math.PI/4
     // The angle is radian
