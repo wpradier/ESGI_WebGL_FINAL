@@ -3,12 +3,14 @@ import {createScene} from "/javascripts/scene.js";
 import {createCamera} from "/javascripts/camera.js";
 import {createRenderer} from "/javascripts/renderer.js";
 import {createFirstPersonControls} from "/javascripts/firstPersonControls.js";
+import Stats from '/modules/three.js-master/examples/jsm/libs/stats.module.js';
 
-let scene, camera, renderer, controls, clock;
+let scene, camera, renderer, controls, clock, stats;
 
 const startButton = document.getElementById("start");
 startButton.addEventListener('click', init);
 
+await init();
 async function init() {
     clock = new THREE.Clock();
 
@@ -27,9 +29,11 @@ async function init() {
     renderer = createRenderer();
     controls = createFirstPersonControls(camera, renderer);
 
-
     scene.add(mesh);
 
+    //create stats
+    stats = new Stats();
+    document.body.appendChild( stats.dom );
 
 
     document.body.appendChild(renderer.domElement);
@@ -50,6 +54,8 @@ function onWindowResize() {
 
 function animate() {
     requestAnimationFrame(animate);
+
+    stats.update();
 
     controls.update(clock.getDelta());
     renderer.render(scene, camera);
