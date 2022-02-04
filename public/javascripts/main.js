@@ -3,14 +3,18 @@ import {createScene} from "/javascripts/scene.js";
 import {createCamera} from "/javascripts/camera.js";
 import {createRenderer} from "/javascripts/renderer.js";
 import {createFirstPersonControls} from "/javascripts/firstPersonControls.js";
+import {createMainPersonSwimming} from "/javascripts/mainPersonSwimming.js";
+import {createMainPersonTradingWater} from "/javascripts/mainPersonTradingWater.js";
 
-let scene, camera, renderer, controls, clock;
+let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ;
+const clock = new THREE.Clock();
 
 const startButton = document.getElementById("start");
 startButton.addEventListener('click', init);
 
+await init();
 async function init() {
-    clock = new THREE.Clock();
+    //clock = new THREE.Clock();
 
     // Suppression de l'écran d'accueil
     const overlay = document.getElementById("overlay");
@@ -27,10 +31,18 @@ async function init() {
     renderer = createRenderer();
     controls = createFirstPersonControls(camera, renderer);
 
-
     scene.add(mesh);
 
+    //Add ambient light
+    let ambient = new THREE.AmbientLight( 0xffffff, 1 );
+    scene.add( ambient );
 
+    //Add mainPerson
+    mainPersonObjSwimming = await createMainPersonSwimming(scene, mixer, camera);
+    mainPersonObjTrading = await createMainPersonTradingWater(scene, mixer, camera);
+
+    //update last position 
+    updatePosition();
 
     document.body.appendChild(renderer.domElement);
 
@@ -47,10 +59,34 @@ function onWindowResize() {
     controls.handleResize();
 }
 
-
 function animate() {
     requestAnimationFrame(animate);
 
-    controls.update(clock.getDelta());
+    const delta = clock.getDelta();
+    controls.update( delta );
+
+    if ( mainPersonObjTrading.obj &&  mainPersonObjTrading.mixer){
+        if (positionX == camera.position.x && positionY == camera.position.y && positionZ == camera.position.z){
+            camera.remove( mainPersonObjSwimming.obj );
+            camera.add(mainPersonObjTrading.obj);
+            scene.add(camera);
+            mainPersonObjTrading.mixer.update(delta);
+        }else{
+            camera.remove( mainPersonObjTrading.obj );
+            camera.add(mainPersonObjSwimming.obj);
+            scene.add(camera);
+
+            mainPersonObjSwimming.mixer.update(delta);
+
+            updatePosition();
+        }
+    }
+
     renderer.render(scene, camera);
+}
+
+function updatePosition(){
+    positionX = camera.position.x;
+    positionY = camera.position.y;
+    positionZ = camera.position.z;
 }
