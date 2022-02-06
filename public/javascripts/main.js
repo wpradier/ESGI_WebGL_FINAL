@@ -9,7 +9,7 @@ import {createSpotLight} from "/javascripts/spotLight.js";
 import {createAmbientLight} from "/javascripts/ambientLight.js";
 import {createCoral} from "/javascripts/coral.js";
 
-let scene, camera, renderer, controls, clock, mixer, statueObj, pointLight, pointLightActive, raycaster, parentTransform;
+let scene, camera, renderer, controls, clock, mixer, statueObj, pointLight, pointLightActive, raycaster;
 
 const startButton = document.getElementById("start");
 startButton.addEventListener('click', init);
@@ -24,11 +24,6 @@ async function init() {
     overlay.remove();
 
     /** WEBGL **/
-
-    // COLLISION TEST
-    raycaster = new THREE.Raycaster();
-    document.addEventListener( 'mousemove', onPointerMove );
-
     scene = await createScene();
     camera = createCamera();
     renderer = createRenderer();
@@ -48,6 +43,9 @@ async function init() {
     pointLightActive = false;
     // Add coral obj
     await createCoral(scene);
+    //collision of the statue
+    raycaster = new THREE.Raycaster();
+    document.addEventListener( 'mousemove', onPointerMove );
 
     document.body.appendChild(renderer.domElement);
 
@@ -87,27 +85,7 @@ async function animate() {
         }
     }
 
-    // add EventListener the function logKey when a keydown
-    await window.addEventListener('keydown', logKey);
-
     renderer.render(scene, camera);
-}
-
-async function logKey(event) {
-    // when keydown 'a', ...
-    if (event.keyCode === 65)
-    {
-        if (pointLightActive == false){
-            scene.add(pointLight.pointLightRight);
-            scene.add(pointLight.pointLightLeft);
-            pointLightActive = true;
-        }else{
-            scene.remove(pointLight.pointLightRight);
-            scene.remove(pointLight.pointLightLeft);
-            pointLightActive = false;
-        }
-
-    }
 }
 
 function onPointerMove( event ) {
