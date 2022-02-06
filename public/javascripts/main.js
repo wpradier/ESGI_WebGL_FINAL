@@ -3,10 +3,11 @@ import {createScene} from "/javascripts/scene.js";
 import {createCamera} from "/javascripts/camera.js";
 import {createRenderer} from "/javascripts/renderer.js";
 import {createFirstPersonControls} from "/javascripts/firstPersonControls.js";
+import Stats from '/modules/three.js-master/examples/jsm/libs/stats.module.js';
 import {createMainPersonSwimming} from "/javascripts/mainPersonSwimming.js";
 import {createMainPersonTradingWater} from "/javascripts/mainPersonTradingWater.js";
 
-let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ;
+let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats;
 const clock = new THREE.Clock();
 
 const startButton = document.getElementById("start");
@@ -33,7 +34,11 @@ async function init() {
 
     scene.add(mesh);
 
-    //Add ambient light
+    //create stats
+    stats = new Stats();
+    document.body.appendChild( stats.dom );
+
+  //Add ambient light
     let ambient = new THREE.AmbientLight( 0xffffff, 1 );
     scene.add( ambient );
 
@@ -62,6 +67,8 @@ function onWindowResize() {
 function animate() {
     requestAnimationFrame(animate);
 
+    stats.update();
+
     const delta = clock.getDelta();
     controls.update( delta );
 
@@ -81,7 +88,7 @@ function animate() {
             updatePosition();
         }
     }
-
+  
     renderer.render(scene, camera);
 }
 
