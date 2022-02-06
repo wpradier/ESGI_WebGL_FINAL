@@ -7,6 +7,7 @@ import {createStatue} from "/javascripts/statue.js";
 import {createPointLight} from "/javascripts/pointLight.js";
 import {createSpotLight} from "/javascripts/spotLight.js";
 import {createAmbientLight} from "/javascripts/ambientLight.js";
+import {createCoral} from "/javascripts/coral.js";
 
 let scene, camera, renderer, controls, clock, mixer, statueObj, pointLight, pointLightActive, raycaster, parentTransform;
 
@@ -14,20 +15,13 @@ const startButton = document.getElementById("start");
 startButton.addEventListener('click', init);
 
 const pointer = new THREE.Vector2();
-const point = new THREE.Vector3();
 
-await init();
 async function init() {
     clock = new THREE.Clock();
 
     // Suppression de l'écran d'accueil
     const overlay = document.getElementById("overlay");
     overlay.remove();
-
-    const geometry = new THREE.BoxGeometry(200, 200, 200);
-    const material = new THREE.MeshBasicMaterial();
-
-    const mesh = new THREE.Mesh(geometry, material);
 
     /** WEBGL **/
 
@@ -39,8 +33,6 @@ async function init() {
     camera = createCamera();
     renderer = createRenderer();
     controls = createFirstPersonControls(camera, renderer);
-
-    //scene.add(mesh);
 
     const loader = new THREE.TextureLoader();
     loader.setPath( 'assets/skybox/' ); // emplacement des textures
@@ -54,6 +46,8 @@ async function init() {
     //Add pointLight
     pointLight = await createPointLight(statueObj, scene);
     pointLightActive = false;
+    // Add coral obj
+    await createCoral(scene);
 
     document.body.appendChild(renderer.domElement);
 
@@ -117,8 +111,6 @@ async function logKey(event) {
 }
 
 function onPointerMove( event ) {
-
     pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
 }
