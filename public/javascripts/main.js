@@ -3,12 +3,14 @@ import {createScene} from "/javascripts/scene.js";
 import {createCamera} from "/javascripts/camera.js";
 import {createRenderer} from "/javascripts/renderer.js";
 import {createFirstPersonControls} from "/javascripts/firstPersonControls.js";
+import {createCoral} from "/javascripts/coral.js";
 
 let scene, camera, renderer, controls, clock;
 
 const startButton = document.getElementById("start");
 startButton.addEventListener('click', init);
 
+await init();
 async function init() {
     clock = new THREE.Clock();
 
@@ -16,21 +18,13 @@ async function init() {
     const overlay = document.getElementById("overlay");
     overlay.remove();
 
-    const geometry = new THREE.BoxGeometry(200, 200, 200);
-    const material = new THREE.MeshBasicMaterial();
-
-    const mesh = new THREE.Mesh(geometry, material);
-
     /** WEBGL **/
     scene = await createScene();
     camera = createCamera();
     renderer = createRenderer();
     controls = createFirstPersonControls(camera, renderer);
 
-
-    scene.add(mesh);
-
-
+    await createCoral(scene);
 
     document.body.appendChild(renderer.domElement);
 
