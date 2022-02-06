@@ -6,14 +6,16 @@ import {createFirstPersonControls} from "/javascripts/firstPersonControls.js";
 import Stats from '/modules/three.js-master/examples/jsm/libs/stats.module.js';
 import {createMainPersonSwimming} from "/javascripts/mainPersonSwimming.js";
 import {createMainPersonTradingWater} from "/javascripts/mainPersonTradingWater.js";
+import {initSounds} from "/javascripts/audio.js";
 
 let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats;
+
 const clock = new THREE.Clock();
 
 const startButton = document.getElementById("start");
 startButton.addEventListener('click', init);
 
-await init();
+//await init();
 async function init() {
     //clock = new THREE.Clock();
 
@@ -32,13 +34,15 @@ async function init() {
     renderer = createRenderer();
     controls = createFirstPersonControls(camera, renderer);
 
+    initSounds(scene);
+
     scene.add(mesh);
 
     //create stats
     stats = new Stats();
     document.body.appendChild( stats.dom );
 
-  //Add ambient light
+    //Add ambient light
     let ambient = new THREE.AmbientLight( 0xffffff, 1 );
     scene.add( ambient );
 
