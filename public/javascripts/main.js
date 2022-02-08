@@ -1,5 +1,5 @@
 import * as THREE from "/modules/three.js-master/build/three.module.js"
-import {createScene} from "/javascripts/scene.js";
+import * as SCENE from "/javascripts/scene.js";
 import {createCamera} from "/javascripts/camera.js";
 import {createRenderer} from "/javascripts/renderer.js";
 import {createFirstPersonControls} from "/javascripts/firstPersonControls.js";
@@ -7,8 +7,10 @@ import Stats from '/modules/three.js-master/examples/jsm/libs/stats.module.js';
 import {createMainPersonSwimming} from "/javascripts/mainPersonSwimming.js";
 import {createMainPersonTradingWater} from "/javascripts/mainPersonTradingWater.js";
 import {initSounds} from "/javascripts/audio.js";
+// import { importObject } from "./scene";
 
 let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats;
+let landscape;
 
 const clock = new THREE.Clock();
 
@@ -29,14 +31,15 @@ async function init() {
     const mesh = new THREE.Mesh(geometry, material);
 
     /** WEBGL **/
-    scene = await createScene();
+    scene = await SCENE.createScene();
     camera = createCamera();
     renderer = createRenderer();
     controls = createFirstPersonControls(camera, renderer);
 
     initSounds(scene);
 
-    scene.add(mesh);
+    // scene.add(mesh);
+    SCENE.importFBX(scene, landscape, '../assets/landscape/source/landscape.fbx', 0.25, 0, 0, 0);
 
     //create stats
     stats = new Stats();
