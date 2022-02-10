@@ -4,6 +4,7 @@ import { MTLLoader } from "/modules/three.js-master/examples/jsm/loaders/MTLLoad
 import { FBXLoader } from "/modules/three.js-master/examples/jsm/loaders/FBXLoader.js";
 
 async function addSkybox(scene) {
+
     const skyboxTextureLoader = new THREE.CubeTextureLoader();
 
     skyboxTextureLoader.setPath('/assets/skybox/');
