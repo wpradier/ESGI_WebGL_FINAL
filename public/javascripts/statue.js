@@ -12,9 +12,10 @@ async function createStatue(scene, mixer){
     const action = mixer.clipAction( obj.animations[ 0 ] );
     action.play();
 
-    obj.position.y = 0;
-    obj.position.x = 0;
-    obj.position.z = - 260;
+    obj.position.y = 400;
+    obj.position.x = 975;
+    obj.position.z = 2500;
+    obj.rotation.y = 500;
 
     obj.traverse( function ( child ) {
         if ( child.isMesh ) {
@@ -22,6 +23,8 @@ async function createStatue(scene, mixer){
             child.receiveShadow = true;
         }
     } );
+
+    obj.scale.set(1.75, 1.75, 1.75);
 
     scene.add( obj );
 

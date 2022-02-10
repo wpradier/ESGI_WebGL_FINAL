@@ -1,25 +1,38 @@
 import * as THREE from "/modules/three.js-master/build/three.module.js"
 
-function createSpotLight(active, scene){
+function createSpotLight(active, scene, statue){
     let spotLight;
+    const targetObject = new THREE.Object3D();
 
     // SpotLight (color, intensity)
-    spotLight = new THREE.SpotLight( 0xffffff, 50 );
-    spotLight.position.set( 15, 300, 20 );
+    spotLight = new THREE.SpotLight( 0xff0000, 50 );
+
+    targetObject.position.set(statue.position.x + 80, statue.position.y + 120, statue.position.z - 350)
+    spotLight.target = targetObject;
+
+
+    spotLight.position.set( 0 ,  200, 0 );
     // Maximum size of the spotlight angle whose upper bound is Math.PI/4
     // The angle is radian
-    spotLight.angle = Math.PI / 4;
+    spotLight.angle = Math.PI / 8;
     // percent of the spotlight cone attenuated due to penumbra
     spotLight.penumbra = 0.1;
-    // he amount the light dims along the distance of the light ??? pas compris
+    // he amount the light dims along the distance of the light
     spotLight.decay = 2;
     // distance of the projection of the spotLight
-    spotLight.distance = 200;
+    spotLight.distance = 500;
+
+    const coneGeo = new THREE.ConeGeometry(110, 400, 60);
+    const coneMaterial = new THREE.MeshBasicMaterial({ color: 0xfff0000, opacity: 0.5, transparent: true });
+    const cone = new THREE.Mesh(coneGeo, coneMaterial);
+    cone.position.set(targetObject.position.x, targetObject.position.y, targetObject.position.z); // position
+    scene.add(cone);
 
     paramsShadow(spotLight);
     creatLightHelper(active, spotLight, scene);
 
-    scene.add( spotLight );
+    scene.add(targetObject);
+    targetObject.add( spotLight );
 }
 
 function paramsShadow(spotLight){
@@ -40,7 +53,7 @@ function creatLightHelper(active, spotLight, scene){
     // Helper lines for the light direction
     lightHelper = new THREE.SpotLightHelper( spotLight );
     // By default is not visible
-    lightHelper.visible = true;
+    lightHelper.visible = active;
     scene.add( lightHelper );
 }
 
