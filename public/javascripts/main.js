@@ -16,7 +16,7 @@ import {createChest} from "/javascripts/createChest.js";
 // import { importObject } from "./scene";
 
 let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats, statueObj, pointLight, pointLightActive, raycaster;
-let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound;
+let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound, chest;
 
 let status = "closed";
 
@@ -72,11 +72,11 @@ async function init() {
     rotationPoint = chestRequiredValues["rotationPoint"];
     mask = chestRequiredValues["mask"];
     maskLight = chestRequiredValues["maskLight"];
+    chest = chestRequiredValues["chest"];
 
-    // scene.add(mesh);
-    
+
     //SCENE.exportObj(scene, landscape, 'temple-landscape.mtl', 'temple-landscape.obj', '../assets/landscape/source/', 25, 0, 0, 0);
-    SCENE.exportGLTF(scene, landscape, '../assets/landscape/source/temple-landscape.glb', 25, 0, 0, 0);
+    SCENE.exportGLTF(scene, landscape, '../assets/landscape/source/temple-landscape.glb', 25, -10000, -4000, 3000);
 
     //create stats
     stats = new Stats();
@@ -166,7 +166,7 @@ async function animate() {
         status = "opened"
     } else if (rotationPoint.rotation.z >= 0) {
         rotationPoint.rotation.z = 0;
-        mask.position.y = 0;
+        mask.position.y = -5;
         status = "closed"
     }
   
@@ -175,8 +175,7 @@ async function animate() {
 
 function keyDownEvent(event) {
     if (event.keyCode === 69) {
-        console.log(camera.position.distanceTo(mask.position))
-        if (camera.position.distanceTo(mask.position) <= 200) {
+        if (camera.position.distanceTo(chest.position) <= 200) {
             if (status === "closed") {
                 chestOpenSound.play();
                 maskLight.intensity = 1;
