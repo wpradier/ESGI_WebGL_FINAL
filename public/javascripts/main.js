@@ -13,10 +13,14 @@ import {createMainPersonSwimming} from "/javascripts/mainPersonSwimming.js";
 import {createMainPersonTradingWater} from "/javascripts/mainPersonTradingWater.js";
 import {initSounds} from "/javascripts/audio.js";
 import {createChest} from "/javascripts/createChest.js";
+import {createGui} from "/javascripts/createGui.js";
+import {GUI} from "/modules/three.js-master/examples/jsm/libs/dat.gui.module.js";
+
 // import { importObject } from "./scene";
 
 let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats, statueObj, pointLight, pointLightActive, raycaster;
-let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound, chest;
+let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound, bgMusic, ambientLight, chest;
+
 
 let status = "closed";
 
@@ -29,14 +33,11 @@ const pointer = new THREE.Vector2();
 
 //await init();
 async function init() {
-    //clock = new THREE.Clock();
 
     // Suppression de l'écran d'accueil
     const overlay = document.getElementById("overlay");
     overlay.remove();
 
-    const geometry = new THREE.BoxGeometry(200, 200, 200);
-    const material = new THREE.MeshBasicMaterial();
 
     /** WEBGL **/
     scene = await SCENE.createScene();
@@ -52,7 +53,7 @@ async function init() {
     // Add spotLight
     await createSpotLight(false, scene, statueObj.obj);
     //Add ambient light
-    await createAmbientLight(scene);
+    ambientLight = await createAmbientLight(scene);
     //Add pointLight
     pointLight = await createPointLight(statueObj, scene);
     pointLightActive = false;
@@ -67,6 +68,7 @@ async function init() {
     const chestRequiredSounds = await initSounds(camera);
     chestOpenSound = chestRequiredSounds["chestOpenSound"];
     chestCloseSound = chestRequiredSounds["chestCloseSound"];
+    bgMusic = chestRequiredSounds["bgMusic"];
 
     const chestRequiredValues = await createChest(scene);
     rotationPoint = chestRequiredValues["rotationPoint"];
@@ -74,10 +76,13 @@ async function init() {
     maskLight = chestRequiredValues["maskLight"];
     chest = chestRequiredValues["chest"];
 
+    createGui({bgMusic, controls, ambientLight});
 
+    
     //SCENE.exportObj(scene, landscape, 'temple-landscape.mtl', 'temple-landscape.obj', '../assets/landscape/source/', 25, 0, 0, 0);
     SCENE.exportGLTF(scene, landscape, '../assets/landscape/source/temple-landscape.glb', 25, -10000, -4000, 3000);
 
+	//
     //create stats
     stats = new Stats();
     document.body.appendChild( stats.dom );
@@ -86,7 +91,10 @@ async function init() {
     mainPersonObjSwimming = await createMainPersonSwimming(scene, mixer, camera);
     mainPersonObjTrading = await createMainPersonTradingWater(scene, mixer, camera);
 
-    //update last position 
+    //update last position sync function animate() {
+    requestAnimationFrame(animate);
+
+
     updatePosition();
 
     document.body.appendChild(renderer.domElement);
