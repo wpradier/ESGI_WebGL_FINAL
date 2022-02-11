@@ -32,7 +32,6 @@ startButton.addEventListener('click', init);
 
 const pointer = new THREE.Vector2();
 
-await init();
 async function init() {
 
     // Suppression de l'écran d'accueil
