@@ -1,17 +1,17 @@
 import * as THREE from "/modules/three.js-master/build/three.module.js"
 
-function createSpotLight(active, scene, statue){
+function createSpotLight(active, scene, chest){
     let spotLight;
     const targetObject = new THREE.Object3D();
 
     // SpotLight (color, intensity)
-    spotLight = new THREE.SpotLight( 0xff0000, 50 );
+    spotLight = new THREE.SpotLight( 0xffffff, 10 );
 
-    targetObject.position.set(statue.position.x + 80, statue.position.y + 120, statue.position.z - 350)
+    targetObject.position.set(chest.position.x, chest.position.y, chest.position.z);
     spotLight.target = targetObject;
 
 
-    spotLight.position.set( 0 ,  200, 0 );
+    spotLight.position.set( 0 ,  900, 0 );
     // Maximum size of the spotlight angle whose upper bound is Math.PI/4
     // The angle is radian
     spotLight.angle = Math.PI / 8;
@@ -22,8 +22,8 @@ function createSpotLight(active, scene, statue){
     // distance of the projection of the spotLight
     spotLight.distance = 500;
 
-    const coneGeo = new THREE.ConeGeometry(110, 400, 60);
-    const coneMaterial = new THREE.MeshBasicMaterial({ color: 0xfff0000, opacity: 0.5, transparent: true });
+    const coneGeo = new THREE.ConeGeometry(210, 1100, 110);
+    const coneMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 0.15, transparent: true });
     const cone = new THREE.Mesh(coneGeo, coneMaterial);
     cone.position.set(targetObject.position.x, targetObject.position.y, targetObject.position.z); // position
     scene.add(cone);

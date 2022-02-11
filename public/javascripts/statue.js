@@ -2,7 +2,7 @@ import * as THREE from "/modules/three.js-master/build/three.module.js"
 
 import { FBXLoader } from '/modules/three.js-master/examples/jsm/loaders/FBXLoader.js'; // FBX looader
 
-async function createStatue(scene, mixer){
+async function createStatue(scene, mixer, posX, posZ){
     const loaderObject = new FBXLoader();
 
     let obj = await loaderObject.loadAsync( './assets/statue/JumpingDown.fbx');
@@ -12,9 +12,9 @@ async function createStatue(scene, mixer){
     const action = mixer.clipAction( obj.animations[ 0 ] );
     action.play();
 
-    obj.position.y = 400;
-    obj.position.x = 975;
-    obj.position.z = 2500;
+    obj.position.x = posX;
+    obj.position.y = -1190;
+    obj.position.z = posZ;
     obj.rotation.y = 500;
 
     obj.traverse( function ( child ) {

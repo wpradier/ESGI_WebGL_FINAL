@@ -15,7 +15,7 @@ import {initSounds} from "/javascripts/audio.js";
 import {createChest} from "/javascripts/createChest.js";
 // import { importObject } from "./scene";
 
-let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats, statueObj, pointLight, pointLightActive, raycaster;
+let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats, statueObj, statueObj2, pointLight, pointLight2, raycaster;
 let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound, chest;
 
 let status = "closed";
@@ -27,16 +27,13 @@ startButton.addEventListener('click', init);
 
 const pointer = new THREE.Vector2();
 
-//await init();
+await init();
 async function init() {
     //clock = new THREE.Clock();
 
     // Suppression de l'écran d'accueil
     const overlay = document.getElementById("overlay");
     overlay.remove();
-
-    const geometry = new THREE.BoxGeometry(200, 200, 200);
-    const material = new THREE.MeshBasicMaterial();
 
     /** WEBGL **/
     scene = await SCENE.createScene();
@@ -48,14 +45,13 @@ async function init() {
     loader.setPath( 'assets/skybox/' ); // emplacement des textures
 
     //Add statue
-    statueObj = await createStatue(scene, mixer);
-    // Add spotLight
-    await createSpotLight(false, scene, statueObj.obj);
+    statueObj = await createStatue(scene, mixer, 2100, 5950);
+    statueObj2 = await createStatue(scene, mixer, 2600, 5750);
     //Add ambient light
     await createAmbientLight(scene);
     //Add pointLight
     pointLight = await createPointLight(statueObj, scene);
-    pointLightActive = false;
+    pointLight2 = await createPointLight(statueObj2, scene);
     // Add coral obj
     await createCoral(scene);
     //collision of the statue
@@ -73,6 +69,9 @@ async function init() {
     mask = chestRequiredValues["mask"];
     maskLight = chestRequiredValues["maskLight"];
     chest = chestRequiredValues["chest"];
+
+    // Add spotLight
+    await createSpotLight(false, scene, chest);
 
 
     //SCENE.exportObj(scene, landscape, 'temple-landscape.mtl', 'temple-landscape.obj', '../assets/landscape/source/', 25, 0, 0, 0);
@@ -118,8 +117,10 @@ async function animate() {
     const delta = clock.getDelta();
     controls.update( delta );
 
-    if ( statueObj.mixer)
+    if ( statueObj.mixer){
         statueObj.mixer.update(delta);
+        statueObj2.mixer.update(delta);
+    }
 
     raycaster.setFromCamera( pointer, camera );
     const intersects = raycaster.intersectObjects( statueObj.obj.children, true );
@@ -131,6 +132,18 @@ async function animate() {
         } else {
             pointLight.pointLightRight.visible = false;
             pointLight.pointLightLeft.visible = false;
+        }
+    }
+
+    const intersects2 = raycaster.intersectObjects( statueObj2.obj.children, true );
+
+    if (statueObj2.obj){
+        if ( intersects2.length > 0 ) {
+            pointLight2.pointLightRight.visible = true;
+            pointLight2.pointLightLeft.visible = true;
+        } else {
+            pointLight2.pointLightRight.visible = false;
+            pointLight2.pointLightLeft.visible = false;
         }
     }
 
