@@ -24,6 +24,7 @@ async function createStatue(scene, mixer, posX, posZ){
         }
     } );
 
+    // change size of the statue
     obj.scale.set(1.75, 1.75, 1.75);
 
     scene.add( obj );

@@ -134,8 +134,10 @@ async function animate() {
         statueObj2.mixer.update(delta);
     }
 
+    // Updates the ray with a new origin and direction
     raycaster.setFromCamera( pointer, camera );
-    const intersects = raycaster.intersectObjects( statueObj.obj.children, true );
+    // recup intersections between ray and object
+    const intersects = raycaster.intersectObjects( statueObj.obj.children);
 
     if (statueObj.obj){
         if ( intersects.length > 0 ) {
@@ -147,7 +149,7 @@ async function animate() {
         }
     }
 
-    const intersects2 = raycaster.intersectObjects( statueObj2.obj.children, true );
+    const intersects2 = raycaster.intersectObjects( statueObj2.obj.children);
 
     if (statueObj2.obj){
         if ( intersects2.length > 0 ) {
