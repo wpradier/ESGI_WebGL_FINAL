@@ -4,7 +4,7 @@ function createFirstPersonControls (camera, renderer) {
     const controls = new FirstPersonControls(camera, renderer.domElement);
 
 
-    controls.movementSpeed = 500; // 200
+    controls.movementSpeed = 400; // 200
     controls.lookSpeed = 0.05;
     controls.noFly = true;
     controls.lookAt(0,0,0);
