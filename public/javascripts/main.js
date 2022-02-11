@@ -1,5 +1,6 @@
-import * as THREE from "/modules/three.js-master/build/three.module.js"
+import * as THREE from "/modules/three.js-master/build/three.module.js";
 import * as SCENE from "/javascripts/scene.js";
+import * as COLLISION from "/javascripts/collisions.js";
 import {createCamera} from "/javascripts/camera.js";
 import {createRenderer} from "/javascripts/renderer.js";
 import {createFirstPersonControls} from "/javascripts/firstPersonControls.js";
@@ -16,7 +17,7 @@ import {createChest} from "/javascripts/createChest.js";
 // import { importObject } from "./scene";
 
 let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats, statueObj, pointLight, pointLightActive, raycaster;
-let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound;
+let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound, cube;
 
 let status = "closed";
 
@@ -75,9 +76,19 @@ async function init() {
 
     // scene.add(mesh);
     
+    //testing object export with obj material
     //SCENE.exportObj(scene, landscape, 'temple-landscape.mtl', 'temple-landscape.obj', '../assets/landscape/source/', 25, 0, 0, 0);
+    
     SCENE.exportGLTF(scene, landscape, '../assets/landscape/source/temple-landscape.glb', 25, 0, 0, 0);
 
+    //weird bug with the scope of position, couldn't manage to make object show up
+    //COLLISION.makeInstance(scene, cube, COLLISION.instanceBoxSize(100, 100, 100), COLLISION.hsl(2 / 8, 1, .5), 0, 1000, 0);
+    
+    //pointing the camera towards the cube, however fatal error
+    // controls.lookAt(cube.position);
+    
+    
+    
     //create stats
     stats = new Stats();
     document.body.appendChild( stats.dom );
@@ -195,5 +206,6 @@ function updatePosition() {
     positionY = camera.position.y;
     positionZ = camera.position.z;
 }
+
 
 // export { animate };

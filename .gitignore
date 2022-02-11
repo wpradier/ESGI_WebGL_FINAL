@@ -105,3 +105,5 @@ dist
 
 # TernJS port file
 .tern-port
+
+public/modules/three.js-master/examples/models/obj/walt/WaltHead.obj

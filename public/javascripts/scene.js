@@ -34,7 +34,6 @@ async function createScene() {
 async function exportObj(scene, objName, mtlFile, objFile, assetPath, scaleAxis, positionX, positionY, positionZ) {
     let objLoader = new OBJLoader();
     let mtlLoader = new MTLLoader();
-    // mtlLoader.setBaseUrl(assetPath);
     mtlLoader.setPath(assetPath);
 
     mtlLoader.load(mtlFile, function(materials){
@@ -81,17 +80,18 @@ async function exportGLTF(scene, gltfName, gltfPath, scaleAxis, positionX, posit
                 }
              } );
         gltfName = object;
+
         gltfName.scene.scale.set(scaleAxis, scaleAxis, scaleAxis);
         gltfName.scene.position.set(positionX, positionY, positionZ);
         scene.add(gltfName.scene);
 
-        // const worldOctree = new Octree();
+
+        //testing octree lib for collisions, error with animate, i could no longer access mainjs despite exporting the fonction correctly         // const worldOctree = new Octree();
         // worldOctree.fromGraphNode( gltfName.scene ); //collisions
         // animate();
     });
 }
-
-
+    
 export { createScene };
 export { exportObj };
 export { exportFBX };
