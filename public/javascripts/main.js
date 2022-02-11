@@ -14,6 +14,7 @@ import {createMainPersonTradingWater} from "/javascripts/mainPersonTradingWater.
 import {initSounds} from "/javascripts/audio.js";
 import {createChest} from "/javascripts/createChest.js";
 import {createGui} from "/javascripts/createGui.js";
+import {addComponent} from "/javascripts/addComponent.js";
 import {GUI} from "/modules/three.js-master/examples/jsm/libs/dat.gui.module.js";
 
 // import { importObject } from "./scene";
@@ -57,8 +58,6 @@ async function init() {
     //Add pointLight
     pointLight = await createPointLight(statueObj, scene);
     pointLight2 = await createPointLight(statueObj2, scene);
-    // Add coral obj
-    await createCoral(scene);
     //collision of the statue
     raycaster = new THREE.Raycaster();
     document.addEventListener( 'mousemove', onPointerMove );
@@ -76,6 +75,15 @@ async function init() {
     maskLight = chestRequiredValues["maskLight"];
     chest = chestRequiredValues["chest"];
 
+
+    addComponent(chest, await createCoral(), {x: -50, y: -30, z: -100}, {x: 0, y: 0, z: 0});
+    addComponent(chest, await createCoral(), {x: -70, y: -30, z: -50}, {x: 0, y: 0, z: 0});
+    addComponent(chest, await createCoral(), {x: -60, y: -30, z: 0}, {x: 0, y: 0, z: 0});
+    addComponent(chest, await createCoral(), {x: -10, y: -30, z: 85}, {x: 0, y: 0, z: 0});
+    addComponent(chest, await createCoral(), {x: 80, y: -30, z: 65}, {x: 0, y: 0, z: 0});
+    addComponent(chest, await createCoral(), {x: 90, y: -30, z: -10}, {x: 0, y: 0, z: 0});
+
+    
     // Add spotLight
     await createSpotLight(false, scene, chest);
 
