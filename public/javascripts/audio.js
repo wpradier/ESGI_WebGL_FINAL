@@ -39,7 +39,7 @@ async function initSounds(camera) {
     splashSound.play();
     bgMusic.play();
 
-    return {chestOpenSound, chestCloseSound};
+    return {chestOpenSound, chestCloseSound, bgMusic};
 }
 
 export {initSounds};

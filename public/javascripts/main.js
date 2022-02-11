@@ -14,10 +14,14 @@ import {createMainPersonSwimming} from "/javascripts/mainPersonSwimming.js";
 import {createMainPersonTradingWater} from "/javascripts/mainPersonTradingWater.js";
 import {initSounds} from "/javascripts/audio.js";
 import {createChest} from "/javascripts/createChest.js";
+import {createGui} from "/javascripts/createGui.js";
+import {addComponent} from "/javascripts/addComponent.js";
+import {GUI} from "/modules/three.js-master/examples/jsm/libs/dat.gui.module.js";
+
 // import { importObject } from "./scene";
 
-let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats, statueObj, pointLight, pointLightActive, raycaster;
-let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound, cube;
+let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats, statueObj, statueObj2, pointLight, pointLight2, pointLightActive, raycaster;
+let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound, bgMusic, ambientLight, chest, cube;
 
 let status = "closed";
 
@@ -28,16 +32,13 @@ startButton.addEventListener('click', init);
 
 const pointer = new THREE.Vector2();
 
-//await init();
+await init();
 async function init() {
-    //clock = new THREE.Clock();
 
     // Suppression de l'écran d'accueil
     const overlay = document.getElementById("overlay");
     overlay.remove();
 
-    const geometry = new THREE.BoxGeometry(200, 200, 200);
-    const material = new THREE.MeshBasicMaterial();
 
     /** WEBGL **/
     scene = await SCENE.createScene();
@@ -49,16 +50,13 @@ async function init() {
     loader.setPath( 'assets/skybox/' ); // emplacement des textures
 
     //Add statue
-    statueObj = await createStatue(scene, mixer);
-    // Add spotLight
-    await createSpotLight(false, scene, statueObj.obj);
+    statueObj = await createStatue(scene, mixer, 2100, 5950);
+    statueObj2 = await createStatue(scene, mixer, 2600, 5750);
     //Add ambient light
-    await createAmbientLight(scene);
+    ambientLight = await createAmbientLight(scene);
     //Add pointLight
     pointLight = await createPointLight(statueObj, scene);
-    pointLightActive = false;
-    // Add coral obj
-    await createCoral(scene);
+    pointLight2 = await createPointLight(statueObj2, scene);
     //collision of the statue
     raycaster = new THREE.Raycaster();
     document.addEventListener( 'mousemove', onPointerMove );
@@ -68,27 +66,39 @@ async function init() {
     const chestRequiredSounds = await initSounds(camera);
     chestOpenSound = chestRequiredSounds["chestOpenSound"];
     chestCloseSound = chestRequiredSounds["chestCloseSound"];
+    bgMusic = chestRequiredSounds["bgMusic"];
 
     const chestRequiredValues = await createChest(scene);
     rotationPoint = chestRequiredValues["rotationPoint"];
     mask = chestRequiredValues["mask"];
     maskLight = chestRequiredValues["maskLight"];
+    chest = chestRequiredValues["chest"];
 
-    // scene.add(mesh);
+
+    addComponent(chest, await createCoral(), {x: -50, y: -30, z: -100}, {x: 0, y: 0, z: 0});
+    addComponent(chest, await createCoral(), {x: -70, y: -30, z: -50}, {x: 0, y: 0, z: 0});
+    addComponent(chest, await createCoral(), {x: -60, y: -30, z: 0}, {x: 0, y: 0, z: 0});
+    addComponent(chest, await createCoral(), {x: -10, y: -30, z: 85}, {x: 0, y: 0, z: 0});
+    addComponent(chest, await createCoral(), {x: 80, y: -30, z: 65}, {x: 0, y: 0, z: 0});
+    addComponent(chest, await createCoral(), {x: 90, y: -30, z: -10}, {x: 0, y: 0, z: 0});
+
+    
+    // Add spotLight
+    await createSpotLight(false, scene, chest);
+
+    createGui({bgMusic, controls, ambientLight});
+
     
     //testing object export with obj material
     //SCENE.exportObj(scene, landscape, 'temple-landscape.mtl', 'temple-landscape.obj', '../assets/landscape/source/', 25, 0, 0, 0);
     
-    SCENE.exportGLTF(scene, landscape, '../assets/landscape/source/temple-landscape.glb', 25, 0, 0, 0);
-
+    SCENE.exportGLTF(scene, landscape, '../assets/landscape/source/temple-landscape.glb', 25, -10000, -4000, 3000);
     //weird bug with the scope of position, couldn't manage to make object show up
     //COLLISION.makeInstance(scene, cube, COLLISION.instanceBoxSize(100, 100, 100), COLLISION.hsl(2 / 8, 1, .5), 0, 1000, 0);
     
     //pointing the camera towards the cube, however fatal error
     // controls.lookAt(cube.position);
-    
-    
-    
+	
     //create stats
     stats = new Stats();
     document.body.appendChild( stats.dom );
@@ -97,7 +107,10 @@ async function init() {
     mainPersonObjSwimming = await createMainPersonSwimming(scene, mixer, camera);
     mainPersonObjTrading = await createMainPersonTradingWater(scene, mixer, camera);
 
-    //update last position 
+    //update last position sync function animate() {
+    requestAnimationFrame(animate);
+
+
     updatePosition();
 
     document.body.appendChild(renderer.domElement);
@@ -129,11 +142,15 @@ async function animate() {
     const delta = clock.getDelta();
     controls.update( delta );
 
-    if ( statueObj.mixer)
+    if ( statueObj.mixer){
         statueObj.mixer.update(delta);
+        statueObj2.mixer.update(delta);
+    }
 
+    // Updates the ray with a new origin and direction
     raycaster.setFromCamera( pointer, camera );
-    const intersects = raycaster.intersectObjects( statueObj.obj.children, true );
+    // recup intersections between ray and object
+    const intersects = raycaster.intersectObjects( statueObj.obj.children);
 
     if (statueObj.obj){
         if ( intersects.length > 0 ) {
@@ -142,6 +159,18 @@ async function animate() {
         } else {
             pointLight.pointLightRight.visible = false;
             pointLight.pointLightLeft.visible = false;
+        }
+    }
+
+    const intersects2 = raycaster.intersectObjects( statueObj2.obj.children);
+
+    if (statueObj2.obj){
+        if ( intersects2.length > 0 ) {
+            pointLight2.pointLightRight.visible = true;
+            pointLight2.pointLightLeft.visible = true;
+        } else {
+            pointLight2.pointLightRight.visible = false;
+            pointLight2.pointLightLeft.visible = false;
         }
     }
 
@@ -177,7 +206,7 @@ async function animate() {
         status = "opened"
     } else if (rotationPoint.rotation.z >= 0) {
         rotationPoint.rotation.z = 0;
-        mask.position.y = 0;
+        mask.position.y = -5;
         status = "closed"
     }
   
@@ -186,8 +215,7 @@ async function animate() {
 
 function keyDownEvent(event) {
     if (event.keyCode === 69) {
-        console.log(camera.position.distanceTo(mask.position))
-        if (camera.position.distanceTo(mask.position) <= 200) {
+        if (camera.position.distanceTo(chest.position) <= 200) {
             if (status === "closed") {
                 chestOpenSound.play();
                 maskLight.intensity = 1;
@@ -207,5 +235,5 @@ function updatePosition() {
     positionZ = camera.position.z;
 }
 
-
 // export { animate };
+
