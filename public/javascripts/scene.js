@@ -3,7 +3,7 @@ import { OBJLoader } from "/modules/three.js-master/examples/jsm/loaders/OBJLoad
 import { MTLLoader } from "/modules/three.js-master/examples/jsm/loaders/MTLLoader.js";
 import { FBXLoader } from "/modules/three.js-master/examples/jsm/loaders/FBXLoader.js";
 import { GLTFLoader } from '/modules/three.js-master/examples/jsm/loaders/GLTFLoader.js';
-import { Octree } from '/modules/three.js-master/examples/jsm/math/Octree.js';
+// import { Octree } from '/modules/three.js-master/examples/jsm/math/Octree.js';
 // import {animate} from "/javascript/main.js";
 
 async function addSkybox(scene) {
@@ -84,9 +84,9 @@ async function exportGLTF(scene, gltfName, gltfPath, scaleAxis, positionX, posit
         gltfName.scene.position.set(positionX, positionY, positionZ);
         scene.add(gltfName.scene);
 
-        const worldOctree = new Octree();
-        worldOctree.fromGraphNode( gltfName.scene ); //collisions
-        animate();
+        // const worldOctree = new Octree();
+        // worldOctree.fromGraphNode( gltfName.scene ); //collisions
+        // animate();
     });
 }
 

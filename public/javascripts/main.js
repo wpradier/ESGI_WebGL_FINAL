@@ -39,9 +39,9 @@ async function init() {
     initSounds(scene);
 
     // scene.add(mesh);
-    // SCENE.exportObj(scene, landscape, '../assets/landscape/source/temple-landscape.mtl', '../assets/landscape/source/temple-landscape.obj', 25, 0, 0, 0);
-    SCENE.exportObj(scene, landscape, 'temple-landscape.mtl', 'temple-landscape.obj', '../assets/landscape/source/', 25, 0, 0, 0);
-    //SCENE.exportGLTF(scene, landscape, '../assets/landscape/source/temple-landscape.glb', 25, 0, 0, 0);
+    
+    //SCENE.exportObj(scene, landscape, 'temple-landscape.mtl', 'temple-landscape.obj', '../assets/landscape/source/', 25, 0, 0, 0);
+    SCENE.exportGLTF(scene, landscape, '../assets/landscape/source/temple-landscape.glb', 25, 0, 0, 0);
 
     //create stats
     stats = new Stats();
@@ -107,4 +107,4 @@ function updatePosition(){
     positionZ = camera.position.z;
 }
 
-export { animate };
+// export { animate };
