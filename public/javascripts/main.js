@@ -8,10 +8,13 @@ import {createMainPersonSwimming} from "/javascripts/mainPersonSwimming.js";
 import {createMainPersonTradingWater} from "/javascripts/mainPersonTradingWater.js";
 import {initSounds} from "/javascripts/audio.js";
 import {createChest} from "/javascripts/createChest.js";
+import {createGui} from "/javascripts/createGui.js";
+import {GUI} from "/modules/three.js-master/examples/jsm/libs/dat.gui.module.js";
+
 // import { importObject } from "./scene";
 
 let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats;
-let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound;
+let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound, bgMusic;
 
 let status = "closed";
 
@@ -22,14 +25,10 @@ startButton.addEventListener('click', init);
 
 //await init();
 async function init() {
-    //clock = new THREE.Clock();
 
     // Suppression de l'écran d'accueil
     const overlay = document.getElementById("overlay");
     overlay.remove();
-
-    const geometry = new THREE.BoxGeometry(200, 200, 200);
-    const material = new THREE.MeshBasicMaterial();
 
 
     /** WEBGL **/
@@ -41,6 +40,7 @@ async function init() {
     const chestRequiredSounds = await initSounds(camera);
     chestOpenSound = chestRequiredSounds["chestOpenSound"];
     chestCloseSound = chestRequiredSounds["chestCloseSound"];
+    bgMusic = chestRequiredSounds["bgMusic"];
 
     const chestRequiredValues = await createChest(scene);
     rotationPoint = chestRequiredValues["rotationPoint"];
@@ -51,6 +51,7 @@ async function init() {
     // scene.add(mesh);
     SCENE.importFBX(scene, landscape, '../assets/landscape/source/landscape.fbx', 0.25, 0, 0, 0);
 
+    createGui({bgMusic});
 
 
     //create stats
