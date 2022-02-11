@@ -7,6 +7,7 @@ import { GLTFLoader } from '/modules/three.js-master/examples/jsm/loaders/GLTFLo
 // import {animate} from "/javascript/main.js";
 
 async function addSkybox(scene) {
+
     const skyboxTextureLoader = new THREE.CubeTextureLoader();
 
     skyboxTextureLoader.setPath('/assets/skybox/');
