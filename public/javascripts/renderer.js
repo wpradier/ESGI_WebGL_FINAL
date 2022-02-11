@@ -5,6 +5,11 @@ function createRenderer () {
 
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true; // active shadow
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // shadow encoding
+    document.body.appendChild( renderer.domElement );
+
+    renderer.shadowMap.enabled = true;
 
     return renderer;
 }
