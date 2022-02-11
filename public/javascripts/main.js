@@ -19,7 +19,7 @@ import {GUI} from "/modules/three.js-master/examples/jsm/libs/dat.gui.module.js"
 // import { importObject } from "./scene";
 
 let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats, statueObj, pointLight, pointLightActive, raycaster;
-let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound, bgMusic;
+let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound, bgMusic, ambientLight;
 
 let status = "closed";
 
@@ -52,7 +52,7 @@ async function init() {
     // Add spotLight
     await createSpotLight(false, scene, statueObj.obj);
     //Add ambient light
-    await createAmbientLight(scene);
+    ambientLight = await createAmbientLight(scene);
     //Add pointLight
     pointLight = await createPointLight(statueObj, scene);
     pointLightActive = false;
@@ -76,7 +76,7 @@ async function init() {
 
     // scene.add(mesh);
 
-    createGui({bgMusic});
+    createGui({bgMusic, controls, ambientLight});
 
     
     //SCENE.exportObj(scene, landscape, 'temple-landscape.mtl', 'temple-landscape.obj', '../assets/landscape/source/', 25, 0, 0, 0);
@@ -91,7 +91,10 @@ async function init() {
     mainPersonObjSwimming = await createMainPersonSwimming(scene, mixer, camera);
     mainPersonObjTrading = await createMainPersonTradingWater(scene, mixer, camera);
 
-    //update last position 
+    //update last position sync function animate() {
+    requestAnimationFrame(animate);
+
+
     updatePosition();
 
     document.body.appendChild(renderer.domElement);
@@ -171,7 +174,7 @@ async function animate() {
         status = "opened"
     } else if (rotationPoint.rotation.z >= 0) {
         rotationPoint.rotation.z = 0;
-        mask.position.y = 0;
+        mask.position.y = -5;
         status = "closed"
     }
   
