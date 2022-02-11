@@ -82,11 +82,15 @@ async function createChest(scene) {
 
     //chest.scale.set(0.3, 0.3, 0.3);
 
-    chest.rotation.y = 1.5708; // 90° in radians
+    chest.rotation.y = -1.5708; // 90° in radians
+
+    chest.position.x = 2600;
+    chest.position.y = -1200;
+    chest.position.z = 6500;
 
     scene.add(chest);
 
-    return {rotationPoint, mask, maskLight}
+    return {rotationPoint, mask, maskLight, chest}
 }
 
 export {createChest};

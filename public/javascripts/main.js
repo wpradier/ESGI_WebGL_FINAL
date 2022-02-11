@@ -19,7 +19,8 @@ import {GUI} from "/modules/three.js-master/examples/jsm/libs/dat.gui.module.js"
 // import { importObject } from "./scene";
 
 let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats, statueObj, pointLight, pointLightActive, raycaster;
-let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound, bgMusic, ambientLight;
+let landscape, rotationPoint, mask, maskLight, chestOpenSound, chestCloseSound, bgMusic, ambientLight, chest;
+
 
 let status = "closed";
 
@@ -73,14 +74,13 @@ async function init() {
     rotationPoint = chestRequiredValues["rotationPoint"];
     mask = chestRequiredValues["mask"];
     maskLight = chestRequiredValues["maskLight"];
-
-    // scene.add(mesh);
+    chest = chestRequiredValues["chest"];
 
     createGui({bgMusic, controls, ambientLight});
 
     
     //SCENE.exportObj(scene, landscape, 'temple-landscape.mtl', 'temple-landscape.obj', '../assets/landscape/source/', 25, 0, 0, 0);
-    SCENE.exportGLTF(scene, landscape, '../assets/landscape/source/temple-landscape.glb', 25, 0, 0, 0);
+    SCENE.exportGLTF(scene, landscape, '../assets/landscape/source/temple-landscape.glb', 25, -10000, -4000, 3000);
 
 	//
     //create stats
@@ -183,8 +183,7 @@ async function animate() {
 
 function keyDownEvent(event) {
     if (event.keyCode === 69) {
-        console.log(camera.position.distanceTo(mask.position))
-        if (camera.position.distanceTo(mask.position) <= 200) {
+        if (camera.position.distanceTo(chest.position) <= 200) {
             if (status === "closed") {
                 chestOpenSound.play();
                 maskLight.intensity = 1;
