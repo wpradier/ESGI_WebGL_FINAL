@@ -6,7 +6,6 @@
 body {
     overflow: hidden;
     margin: 0;
-    background-color: black;
 }
 
 h1 {
@@ -18,6 +17,15 @@ h1 {
 
 span {
     margin-right: 30px;
+}
+
+#myVideo {
+    z-index: -1;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
 }
 
 #overlay {
@@ -32,9 +40,9 @@ span {
 }
 
 #start {
-    color: mediumpurple;
-    background-color: transparent;
-    border: 1px solid mediumpurple;
+    color: #00678d;
+    background-color: #b4b3b3;
+    border: 1px solid #02aeee;
     font-size: 1rem;
     border-radius: 4px;
     padding: 15px;
