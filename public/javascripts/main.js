@@ -7,7 +7,7 @@ import Stats from '/modules/three.js-master/examples/jsm/libs/stats.module.js';
 import {createMainPersonSwimming} from "/javascripts/mainPersonSwimming.js";
 import {createMainPersonTradingWater} from "/javascripts/mainPersonTradingWater.js";
 import {initSounds} from "/javascripts/audio.js";
-// import { importObject } from "./scene";
+
 
 let scene, camera, renderer, controls, mixer, mainPersonObjSwimming, mainPersonObjTrading, positionX, positionY, positionZ, stats;
 let landscape;
@@ -39,7 +39,9 @@ async function init() {
     initSounds(scene);
 
     // scene.add(mesh);
-    SCENE.importFBX(scene, landscape, '../assets/landscape/source/landscape.fbx', 0.25, 0, 0, 0);
+    // SCENE.exportObj(scene, landscape, '../assets/landscape/source/temple-landscape.mtl', '../assets/landscape/source/temple-landscape.obj', 25, 0, 0, 0);
+    SCENE.exportObj(scene, landscape, 'temple-landscape.mtl', 'temple-landscape.obj', '../assets/landscape/source/', 25, 0, 0, 0);
+    //SCENE.exportGLTF(scene, landscape, '../assets/landscape/source/temple-landscape.glb', 25, 0, 0, 0);
 
     //create stats
     stats = new Stats();
@@ -104,3 +106,5 @@ function updatePosition(){
     positionY = camera.position.y;
     positionZ = camera.position.z;
 }
+
+export { animate };
